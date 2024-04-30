@@ -10,12 +10,13 @@ Sample = TypedDict("Sample", {"feature": torch.tensor, "identity": int})
 
 
 class VoxCeleb1Features(Dataset):
-    def __init__(self, split: Split, n_mels: int):
+    def __init__(self, root: str, n_mels:int, split: Split):
         self.voxceleb1 = VoxCeleb1Identification(
             subset="test",
-            root="data/voxceleb1",
+            root=root,
             download=False,
         )
+        raise NotImplementedError
 
     def __getitem__(self, i: int) -> Sample:
         raise NotImplementedError
@@ -26,8 +27,9 @@ class VoxCeleb1Features(Dataset):
 
 def setup_data(config):
     n_mels = config.features.n_mels
-    train_dataset = VoxCeleb1Features("train", n_mels)
-    valid_dataset = VoxCeleb1Features("valid", n_mels)
+    root = config.data_dir
+    train_dataset = VoxCeleb1Features(root, n_mels, "train")
+    valid_dataset = VoxCeleb1Features(root, n_mels, "valid")
 
     train_dataloader = DataLoader(
         train_dataset,
